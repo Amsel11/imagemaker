@@ -7,9 +7,8 @@ from pathlib import Path
 
 def im_grid_shower(samples, rows, cols):
     """Display images in a grid with fixed figsize."""
-    fig, axes = plt.subplots(rows, cols, figsize=(15, 6))
-    axes = np.array(axes).reshape(rows, cols)  # Ensure 2D array of axes
-    
+    fig, axes = plt.subplots(rows, cols, figsize=(10, 10))
+    axes = np.array(axes).reshape(rows, cols)  
     for i, ax in enumerate(axes.flat):
         if i < len(samples):
             ax.imshow(samples[i])
@@ -24,18 +23,15 @@ def get_save_name(default_name='generated'):
     return name if name else default_name
 
 def im_saver(samples, name=None, output_dir='output', format='png'):
-    # Initialize counters first
     saved = 0
     failed = 0 
 
-    # Create summary after initializing variables
     summary = {
         'saved': 0,
         'failed': 0,
         'total': len(samples)
     }  
 
-    # Ask for saving preference
     saving = input(f'Would you like to save the images? ').lower()
 
     if saving.startswith('y'): 
@@ -47,8 +43,8 @@ def im_saver(samples, name=None, output_dir='output', format='png'):
         
         for i, sample in enumerate(samples):
             try:
-                img_array = (sample * 255).clip(0, 255).astype(np.uint8)
-                img = Image.fromarray(img_array)
+                #img_array = (sample * 255).clip(0, 255).astype(np.uint8)
+                img = Image.fromarray(sample)
                 filename = os.path.join(output_dir, f'{name}_{i:03d}.{format}')
                 img.save(filename)
                 print(f'Saved image {i+1}/{len(samples)}: {filename}')
@@ -59,7 +55,7 @@ def im_saver(samples, name=None, output_dir='output', format='png'):
                 summary['failed'] += 1
                 continue
     
-    return summary  # Always return the summary dictionary, even if no files were saved
+    return summary 
 
 def main():
     parser = argparse.ArgumentParser(description='Process and save image samples.')
